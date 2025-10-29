@@ -1,7 +1,7 @@
 // API Configuration
 const CONFIG = {
-    API_URL: 'http://localhost:1337/api',
-    UPLOAD_URL: 'http://localhost:1337',
+    API_URL: 'https://uplifting-presence-2e941f1ba9.strapiapp.com/api',
+    UPLOAD_URL: 'https://uplifting-presence-2e941f1ba9.strapiapp.com',
     // Note: JWT token will be stored in memory (not localStorage due to sandbox restrictions)
     // In a production environment, you would use proper authentication mechanisms
 };
