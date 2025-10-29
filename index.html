@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الحماية المدنية</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>جاري التحميل...</p>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🛡️ نظام إدارة الحماية المدنية</h1>
+                <p>تسجيل الدخول للنظام</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="identifier">اسم المستخدم أو البريد الإلكتروني</label>
+                    <input type="text" id="identifier" name="identifier" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-container">
+                <button id="menuToggle" class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-brand">🛡️ نظام إدارة الحماية المدنية</div>
+                <div class="nav-user">
+                    <span id="userName" class="user-name"></span>
+                    <button id="logoutBtn" class="btn btn-small btn-outline">تسجيل الخروج</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="app-layout">
+            <!-- Sidebar Navigation -->
+            <aside id="sidebar" class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#dashboard" class="menu-item active" data-view="dashboard">
+                        <span class="menu-icon">📊</span>
+                        <span class="menu-text">لوحة التحكم</span>
+                    </a></li>
+                    <li><a href="#branches" class="menu-item" data-view="branches">
+                        <span class="menu-icon">🏢</span>
+                        <span class="menu-text">الفروع</span>
+                    </a></li>
+                    <li><a href="#followups" class="menu-item" data-view="followups">
+                        <span class="menu-icon">📋</span>
+                        <span class="menu-text">تقارير المتابعة</span>
+                    </a></li>
+                    <li><a href="#tasks" class="menu-item" data-view="tasks">
+                        <span class="menu-icon">✅</span>
+                        <span class="menu-text">المهام والمطلوبات</span>
+                    </a></li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="content">
+                <div id="viewContainer"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modalContainer" class="modal-overlay hidden"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script src="components.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Console logging banner
+        console.log('%c\n' +
+            '═══════════════════════════════════════════════════════════════\n' +
+            '  نظام إدارة الحماية المدنية - Civil Defense Management System  \n' +
+            '═══════════════════════════════════════════════════════════════\n' +
+            '\n✅ Console logging enabled for all operations\n' +
+            '✅ API calls are being tracked\n' +
+            '✅ Data relationships are being monitored\n' +
+            '✅ All errors will be logged with details\n' +
+            '\nLegend:\n' +
+            '🔄 = Starting operation\n' +
+            '📡 = API request\n' +
+            '📥 = API response\n' +
+            '📤 = Sending data\n' +
+            '📊 = Data loaded\n' +
+            '✅ = Success\n' +
+            '❌ = Error\n' +
+            '⚠️ = Warning\n' +
+            '\n═══════════════════════════════════════════════════════════════\n',
+            'color: #2c3e50; font-weight: bold;');
+        
+        console.log('🚀 Application starting...');
+        console.log('📋 Strapi API URL:', CONFIG.API_URL);
+        console.log('🔧 Application initialized at:', new Date().toLocaleString('ar-EG'));
+    </script>
+</body>
+</html>
