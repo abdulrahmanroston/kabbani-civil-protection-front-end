@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+
+       <!-- ✅ PWA Meta Tags -->
+    <meta name="description" content="نظام متابعة وإدارة الحماية المدنية">
+    <meta name="theme-color" content="#21808d">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="الحماية المدنية">
+    
+    <!-- ✅ Manifest Link -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- ✅ Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام إدارة الحماية المدنية</title>
@@ -95,31 +112,57 @@
     <script src="auth.js"></script>
     <script src="components.js"></script>
     <script src="app.js"></script>
+    <!-- ✅ Service Worker Registration -->
     <script>
-        // Console logging banner
-        console.log('%c\n' +
-            '═══════════════════════════════════════════════════════════════\n' +
-            '  نظام إدارة الحماية المدنية - Civil Defense Management System  \n' +
-            '═══════════════════════════════════════════════════════════════\n' +
-            '\n✅ Console logging enabled for all operations\n' +
-            '✅ API calls are being tracked\n' +
-            '✅ Data relationships are being monitored\n' +
-            '✅ All errors will be logged with details\n' +
-            '\nLegend:\n' +
-            '🔄 = Starting operation\n' +
-            '📡 = API request\n' +
-            '📥 = API response\n' +
-            '📤 = Sending data\n' +
-            '📊 = Data loaded\n' +
-            '✅ = Success\n' +
-            '❌ = Error\n' +
-            '⚠️ = Warning\n' +
-            '\n═══════════════════════════════════════════════════════════════\n',
-            'color: #2c3e50; font-weight: bold;');
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('✅ [PWA] Service Worker registered:', registration.scope);
+                        
+                        // التحقق من التحديثات كل 5 دقائق
+                        setInterval(() => {
+                            registration.update();
+                        }, 5 * 60 * 1000);
+                        
+                        // إشعار بوجود تحديث
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // يوجد نسخة جديدة
+                                    if (confirm('🔄 يوجد تحديث جديد للتطبيق. تحديث الآن؟')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('❌ [PWA] Service Worker registration failed:', error);
+                    });
+            });
+            
+            // إعادة تحميل الصفحة عند تفعيل SW جديد
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
+        }
         
-        console.log('🚀 Application starting...');
-        console.log('📋 Strapi API URL:', CONFIG.API_URL);
-        console.log('🔧 Application initialized at:', new Date().toLocaleString('ar-EG'));
+        // دالة لتنظيف الكاش يدوياً (استخدمها من Console)
+        window.clearAppCache = function() {
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
+                console.log('🗑️ Cache cleared!');
+            }
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.reload();
+        };
     </script>
+    
 </body>
 </html>
