@@ -37,10 +37,15 @@ const Auth = {
             console.log('📊 [AUTH] User data:', result.user);
             console.log('🔑 [AUTH] Token received:', result.jwt ? 'Yes' : 'No');
             
-            // Store token and user in memory
+            // Store token and user in localStorage AND memory
             APP_STATE.token = result.jwt;
             APP_STATE.user = result.user;
-            console.log('💾 [AUTH] Token and user stored in APP_STATE');
+
+            // Save to localStorage
+            localStorage.setItem('auth_token', result.jwt);
+            localStorage.setItem('auth_user', JSON.stringify(result.user));
+            console.log('💾 [AUTH] Token and user stored in localStorage and APP_STATE');
+
 
             Utils.hideLoading();
             Utils.showToast('تم تسجيل الدخول بنجاح', 'success');
@@ -64,9 +69,16 @@ const Auth = {
         console.log('\n🚪 [AUTH] ========== Logout Attempt ==========');
         if (Utils.confirmAction('هل أنت متأكد من تسجيل الخروج؟')) {
             console.log('🗑️ [AUTH] Clearing user session...');
+            
+            // Clear memory
             APP_STATE.token = null;
             APP_STATE.user = null;
-            console.log('✅ [AUTH] Session cleared');
+            
+            // Clear localStorage
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            
+            console.log('✅ [AUTH] Session cleared from localStorage and APP_STATE');
             this.showLoginPage();
             Utils.showToast('تم تسجيل الخروج بنجاح', 'success');
         } else {
@@ -77,12 +89,29 @@ const Auth = {
     // Check authentication status
     checkAuth() {
         console.log('\n🔐 [AUTH] ========== Checking Authentication ==========');
+        
+        // Try to restore from localStorage
+        const savedToken = localStorage.getItem('auth_token');
+        const savedUser = localStorage.getItem('auth_user');
+        
+        if (savedToken && savedUser) {
+            try {
+                APP_STATE.token = savedToken;
+                APP_STATE.user = JSON.parse(savedUser);
+                console.log('✅ [AUTH] Restored session from localStorage');
+                console.log('👤 [AUTH] User:', APP_STATE.user.username || APP_STATE.user.email);
+            } catch (error) {
+                console.error('❌ [AUTH] Failed to parse saved user:', error);
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+            }
+        }
+        
         console.log('🔑 [AUTH] Token exists:', !!APP_STATE.token);
         console.log('👤 [AUTH] User exists:', !!APP_STATE.user);
         
         if (APP_STATE.token && APP_STATE.user) {
             console.log('✅ [AUTH] User is authenticated');
-            console.log('👤 [AUTH] User:', APP_STATE.user.username || APP_STATE.user.email);
             this.showMainApp();
         } else {
             console.log('❌ [AUTH] User not authenticated, showing login page');
